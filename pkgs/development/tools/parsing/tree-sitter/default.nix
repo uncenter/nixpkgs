@@ -8,11 +8,9 @@
   which,
   rustPlatform,
   emscripten,
-  Security,
   callPackage,
   linkFarm,
   substitute,
-  CoreServices,
   enableShared ? !stdenv.hostPlatform.isStatic,
   enableStatic ? stdenv.hostPlatform.isStatic,
   webUISupport ? false,
@@ -164,7 +162,6 @@ let
     );
 
   allGrammars = builtins.attrValues builtGrammars;
-
 in
 rustPlatform.buildRustPackage {
   pname = "tree-sitter";
@@ -172,10 +169,6 @@ rustPlatform.buildRustPackage {
 
   cargoHash = "sha256-0ZoXf0eV3kmHaRoHcWrVEgoWnYNBsY9GiFfy84H+0mc=";
 
-  buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [
-    Security
-    CoreServices
-  ];
   nativeBuildInputs = [ which ] ++ lib.optionals webUISupport [ emscripten ];
 
   patches = lib.optionals webUISupport [
