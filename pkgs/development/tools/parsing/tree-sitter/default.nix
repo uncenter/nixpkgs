@@ -21,11 +21,22 @@
 }:
 
 let
-  # to update:
-  # 1) change all these hashes
-  # 2) nix-build -A tree-sitter.updater.update-all-grammars
-  # 3) Set GITHUB_TOKEN env variable to avoid api rate limit (Use a Personal Access Token from https://github.com/settings/tokens It does not need any permissions)
-  # 4) run the ./result script that is output by that (it updates ./grammars)
+  # For all of the below, set the GITHUB_TOKEN env variable to avoid API rate limiting.
+  # Use a Personal Access Token from https://github.com/settings/tokens, it does not need any permissions.
+
+  # To add a new grammar:
+  # 1) Add the new grammar to either the officialTreeSitterGrammarNames or unofficialGrammars list in update.nix.
+  # 2) Run `nix-build -A tree-sitter.updater.updateGrammars`.
+  # 3) Run the output script with `./result/bin/update-grammars --new`.
+
+  # To update all grammars:
+  # 1) Run `nix-build -A tree-sitter.updater.updateGrammars`.
+  # 2) Run the output script with `./result/bin/update-grammars --all`.
+
+  # To check for new official grammars:
+  # 1) Run `nix-build -A tree-sitter.updater.updateGrammars`.
+  # 2) Run the output script with `./result/bin/update-grammars --check`.
+
   version = "0.24.3";
   hash = "sha256-2Pg4D1Pf1Ex6ykXouAJvD1NVfg5CH4rCQcSTAJmYwd4=";
 
@@ -37,7 +48,7 @@ let
     fetchSubmodules = true;
   };
 
-  update-all-grammars = callPackage ./update.nix { };
+  updateGrammars = callPackage ./update.nix { };
 
   fetchGrammar = (
     v:
@@ -202,7 +213,7 @@ rustPlatform.buildRustPackage {
 
   passthru = {
     updater = {
-      inherit update-all-grammars;
+      inherit updateGrammars;
     };
     inherit
       grammars
